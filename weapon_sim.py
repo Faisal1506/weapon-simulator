@@ -33,11 +33,12 @@ class Weapons:
             print("WAIT")
             return
 
-        if self.ammo <= 1:
-            self.ammo = 0
+        if self.ammo <= 0:
             print("Out of ammo")
             self.reload()
             return
+
+        self.recover_recoil(now - self.last_shot)
         
         pattern_index = self.shot_count % len(self.recoil_pattern)
         base_x, base_y = self.recoil_pattern[pattern_index]
@@ -63,13 +64,12 @@ class Weapons:
                 print(f"Recoil X: {self.current_x:.2f}, Y: {self.current_y:.2f}")
                 break
             else:
-                print("Currant recoil decresed")
-                self.recover_recoil()
-                print(f"Recoil X: {self.current_x:.2f}, Y: {self.current_y:.2f}")
+                print("Invalid Input")
     
-    def recover_recoil(self):
-        self.current_x *= 0.8
-        self.current_y *= 0.8
+    def recover_recoil(self, elapsed):
+        factor = 0.5 ** elapsed
+        self.current_x *= factor
+        self.current_y *= factor
 
 class Pistol(Weapons):
     pass
@@ -87,24 +87,24 @@ class AR(Weapons):
     pass
 class M4(AR):
     def __init__(self):
-        super().__init__(ammo=30, fire_rate=0.1, reload_time=2, max_ammo=30, recoil_pattern=[(0,0.2),(0.05,0.25),(-0.05,0.2),(0,0.2)])
+        super().__init__(ammo=30, fire_rate=0.1, reload_time=2, max_ammo=30, recoil_pattern=[(0,0.2),(-0.03,0.25),(0.05,0.2),(-0.05,0.2)])
 class AK47(AR):
     def __init__(self):
-        super().__init__(ammo=30, fire_rate=0.12, reload_time=2.1, max_ammo=30, recoil_pattern=[(0,0.25),(0.1,0.3),(-0.1,0.25),(0,0.25)])
+        super().__init__(ammo=30, fire_rate=0.12, reload_time=2.1, max_ammo=30, recoil_pattern=[(0,0.25),(0.05,0.3),(0.1,0.25),(0.15,0.25)])
 class Scar(AR):
     def __init__(self):
-        super().__init__(ammo=20, fire_rate=0.13, reload_time=2.4, max_ammo=20, recoil_pattern=[(0,0.3),(0.12,0.35),(-0.12,0.3),(0,0.3)])
+        super().__init__(ammo=20, fire_rate=0.13, reload_time=2.4, max_ammo=20, recoil_pattern=[(0,0.3),(0.08,0.4),(-0.06,0.38),(0.04,0.4)])
 
 class Sniper(Weapons):
     pass
-class Barrette50(Sniper):
+class Barrett50(Sniper):
     def __init__(self):
-        super().__init__(ammo=1, fire_rate=1.5, reload_time=3.5, max_ammo=1, recoil_pattern=[(0,1.5)])
+        super().__init__(ammo=1, fire_rate=1.5, reload_time=3.5, max_ammo=1, recoil_pattern=[(0,4.0)])
 class HuntingRifle(Sniper):
     def __init__(self):
         super().__init__(ammo=1, fire_rate=1.0, reload_time=2.8, max_ammo=1, recoil_pattern=[(0,1.0)])
 
-Weapon_catogory = {
+WEAPON_CATEGORIES = {
     "Pistols":{
         "1":("Glock 17", Glock17),
         "2":("Deagle", Deagle),
@@ -118,16 +118,16 @@ Weapon_catogory = {
     },
 
     "Snipers":{
-        "1":("Barrette50", Barrette50),
-        "2":("HuntingRifle", HuntingRifle)
+        "1":("Barrett .50", Barrett50),
+        "2":("Hunting Rifle", HuntingRifle)
     }
 }
 
 def pick_weapons(category_name):
-    category = Weapon_catogory[category_name]
+    category = WEAPON_CATEGORIES[category_name]
 
     while True:
-        print(f"Select a {category_name}:")
+        print(f"Select from {category_name}:")
         for key, (weapon_name, _) in category.items():
             print(f"{key}. {weapon_name}")
         print("b. Back")
@@ -148,7 +148,7 @@ def pick_weapons(category_name):
 
 def main_menu():
     while True:
-        print("Select a Catagory")
+        print("Select a Category")
         print("1. Pistols")
         print("2. ARs")
         print("3. Snipers")
@@ -165,4 +165,5 @@ def main_menu():
             case _:
                 print("Invalid")
 
-main_menu()
+if __name__ == "__main__":
+    main_menu()
