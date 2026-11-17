@@ -87,7 +87,7 @@ class AR(Weapons):
     pass
 class M4(AR):
     def __init__(self):
-        super().__init__(ammo=30, fire_rate=0.1, reload_time=2, max_ammo=30, recoil_pattern=[(0,0.2),(-0.03,0.25),(0.05,0.2),(-0.05,0.2)])
+        super().__init__(ammo=30, fire_rate=0.1, reload_time=2, max_ammo=30, recoil_pattern=[(0,0.2),(-0.03,0.25),(-0.05,0.2),(-0.05,0.2)])
 class AK47(AR):
     def __init__(self):
         super().__init__(ammo=30, fire_rate=0.12, reload_time=2.1, max_ammo=30, recoil_pattern=[(0,0.25),(0.05,0.3),(0.1,0.25),(0.15,0.25)])
